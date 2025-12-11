@@ -40,12 +40,18 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y wget unzip xvfb
 
-    - name: Install Chrome
+    - name: Setup Chrome and ChromeDriver
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
+        install-chromedriver: true
+
+    - name: Verify Chrome and ChromeDriver versions
       run: |
-        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        echo "🔍 Checking Chrome and ChromeDriver versions:"
+        google-chrome --version || echo "Chrome not found"
+        chromedriver --version || echo "ChromeDriver not found"
+        which chromedriver || echo "ChromeDriver not in PATH"
 
     - name: Install Python dependencies
       working-directory: groq_pipeline
